@@ -5,3 +5,4 @@ scikit-learn==1.7.0
 joblib==1.5.1
 pdfplumber==0.11.7
 plotly==6.1.2
+openpyxl

@@ -1,6 +1,4 @@
-# ==========================================================
-# TALENTLENS AI - PROFESSIONAL RESUME ANALYZER
-# ==========================================================
+
 import streamlit as st
 import joblib
 import pdfplumber
@@ -9,9 +7,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import time
 
-# ==========================================================
-# PAGE CONFIG
-# ==========================================================
+
 st.set_page_config(
     page_title="TalentLens AI",
     page_icon="🚀",
@@ -19,16 +15,12 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==========================================================
-# PREMIUM UI - GLASSMORPHISM + ANIMATIONS
-# ==========================================================
+
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 
-/* =========================================================
-   GLOBAL
-========================================================= */
+
 html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     font-family: 'Plus Jakarta Sans', sans-serif !important;
 }
@@ -50,9 +42,7 @@ html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     max-width: 1280px;
 }
 
-/* =========================================================
-   ANIMATIONS
-========================================================= */
+
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -83,9 +73,7 @@ html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     100% { opacity: 1; transform: scale(1); }
 }
 
-/* =========================================================
-   HERO
-========================================================= */
+
 .hero {
     text-align: center;
     padding: 38px 20px 28px;
@@ -134,9 +122,7 @@ html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     font-weight: 500;
 }
 
-/* =========================================================
-   METRIC CARDS
-========================================================= */
+
 .metric-card {
     background: rgba(255,255,255,0.75);
     backdrop-filter: blur(18px);
@@ -189,9 +175,7 @@ html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     animation: floatY 3.5s ease-in-out infinite;
 }
 
-/* =========================================================
-   GLASS CARDS
-========================================================= */
+
 .card {
     background: rgba(255,255,255,0.78);
     backdrop-filter: blur(18px);
@@ -212,9 +196,7 @@ html, body, [class*="css"], .stApp, .stMarkdown, p, div, label {
     margin-top: 0 !important;
 }
 
-/* =========================================================
-   SIDEBAR
-========================================================= */
+
 section[data-testid="stSidebar"] {
     background: linear-gradient(180deg, #ffffff 0%, #F1F5FF 100%);
     border-right: 1px solid rgba(99,102,241,0.12);
@@ -227,9 +209,7 @@ section[data-testid="stSidebar"] .stAlert {
     border-radius: 14px !important;
 }
 
-/* =========================================================
-   FILE UPLOADER
-========================================================= */
+
 [data-testid="stFileUploader"] {
     background: rgba(255,255,255,0.7);
     backdrop-filter: blur(14px);
@@ -261,9 +241,7 @@ section[data-testid="stSidebar"] .stAlert {
     box-shadow: 0 8px 18px rgba(79,70,229,0.35);
 }
 
-/* =========================================================
-   BUTTONS
-========================================================= */
+
 .stButton > button {
     width: 100%;
     height: 3.2em;
@@ -283,9 +261,7 @@ section[data-testid="stSidebar"] .stAlert {
     box-shadow: 0 15px 35px rgba(124,58,237,0.40);
 }
 
-/* =========================================================
-   SKILL CHIPS
-========================================================= */
+
 .skill-box {
     background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(236,72,153,0.10));
     color: #4338CA;
@@ -316,9 +292,7 @@ section[data-testid="stSidebar"] .stAlert {
     box-shadow: 0 8px 18px rgba(245,158,11,0.30);
 }
 
-/* =========================================================
-   RESULT HEADLINE
-========================================================= */
+
 .result-headline {
     font-family: 'Space Grotesk', sans-serif !important;
     font-size: 30px;
@@ -337,17 +311,13 @@ section[data-testid="stSidebar"] .stAlert {
     color: #6366F1;
     margin-bottom: 6px;
 }
-/* =========================================================
-   HEADINGS
-========================================================= */
+
 h1,h2,h3,h4,h5,h6 {
     color: #0F172A !important;
     font-family: 'Space Grotesk', sans-serif !important;
 }
 
-/* =========================================================
-   TEXT AREA / EXPANDER
-========================================================= */
+
 textarea {
     background-color: white !important;
     color: #0F172A !important;
@@ -364,18 +334,14 @@ textarea {
     animation: fadeIn 0.5s ease both;
 }
 
-/* =========================================================
-   PROGRESS BAR
-========================================================= */
+
 .stProgress > div > div > div > div {
     background: linear-gradient(90deg, #4F46E5, #7C3AED, #EC4899);
     background-size: 200% 100%;
     animation: shimmer 1.6s linear infinite;
 }
 
-/* =========================================================
-   FOOTER
-========================================================= */
+
 .app-footer {
     text-align: center;
     padding: 24px 0 8px;
@@ -391,16 +357,12 @@ textarea {
 </style>
 """, unsafe_allow_html=True)
 
-# ==========================================================
-# LOAD MODELS
-# ==========================================================
+
 model = joblib.load("model.pkl")
 tfidf = joblib.load("tfidf.pkl")
 le = joblib.load("encoder.pkl")
 
-# ==========================================================
-# CATEGORY SKILLS DATABASE
-# ==========================================================
+
 category_skills = {
     "INFORMATION-TECHNOLOGY": [
     "python",
@@ -464,17 +426,13 @@ category_skills = {
 ]
 }
 
-# ==========================================================
-# MASTER SKILLS
-# ==========================================================
+
 all_skills = []
 for skill_list in category_skills.values():
     all_skills.extend(skill_list)
 all_skills = list(set(all_skills))
 
-# ==========================================================
-# PDF EXTRACTION
-# ==========================================================
+
 def extract_text_from_pdf(file):
     text = ""
     with pdfplumber.open(file) as pdf:
@@ -484,18 +442,14 @@ def extract_text_from_pdf(file):
                 text += extracted_text
     return text.strip()
 
-# ==========================================================
-# PREDICT CATEGORY
-# ==========================================================
+
 def predict_category(resume_text):
     resume_tfidf = tfidf.transform([resume_text])
     prediction = model.predict(resume_tfidf)
     category = le.inverse_transform(prediction)[0]
     return category
 
-# ==========================================================
-# EXTRACT SKILLS
-# ==========================================================
+
 def extract_skills(text):
     text = text.lower()
     found_skills = []
@@ -504,9 +458,7 @@ def extract_skills(text):
             found_skills.append(skill)
     return found_skills
 
-# ==========================================================
-# MISSING SKILLS
-# ==========================================================
+
 def missing_skills(found_skills, category):
     recommended_skills = category_skills.get(category, [])
     missing = []
@@ -515,9 +467,7 @@ def missing_skills(found_skills, category):
             missing.append(skill)
     return missing[:6]
 
-# ==========================================================
-# ATS SCORE
-# ==========================================================
+
 
 
 def ats_score(found_skills, category, text):
@@ -545,9 +495,7 @@ def ats_score(found_skills, category, text):
     final_score = min(final_score, 96)
     return int(final_score)
 
-# ==========================================================
-# RESUME STRENGTH
-# ==========================================================
+
 def resume_strength(score):
     if score >= 80:
         return "Excellent Resume 🚀"
@@ -558,9 +506,7 @@ def resume_strength(score):
     else:
         return "Needs Improvement ⚠️"
 
-# ==========================================================
-# ANALYZE RESUME
-# ==========================================================
+
 def analyze_resume(resume_text):
     category = predict_category(resume_text)
 
@@ -586,9 +532,7 @@ def analyze_resume(resume_text):
         "Resume Strength": strength
     }
 
-# ==========================================================
-# HERO SECTION
-# ==========================================================
+
 st.markdown("""
 <div class="hero">
     <div class="hero-badge"><span class="dot"></span> AI-Powered Resume Intelligence</div>
@@ -597,9 +541,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# ==========================================================
-# DASHBOARD METRICS
-# ==========================================================
 col1, col2, col3, col4 = st.columns(4)
 metrics = [
     ("⚡", "95%", "Prediction Accuracy"),
@@ -619,9 +560,6 @@ for col, (icon, value, label) in zip([col1, col2, col3, col4], metrics):
 
 st.markdown("<br>", unsafe_allow_html=True)
 
-# ==========================================================
-# SIDEBAR
-# ==========================================================
 st.sidebar.markdown("### 🚀 TalentLens AI")
 st.sidebar.markdown("##### Your career co-pilot")
 st.sidebar.markdown("---")
@@ -647,16 +585,10 @@ st.sidebar.markdown("""
 st.sidebar.markdown("---")
 st.sidebar.caption("v2.0 · Premium Edition")
 
-# ==========================================================
-# FILE UPLOADER
-# ==========================================================
 st.markdown("### 📄 Upload Your Resume")
 st.caption("Drop a PDF below — we'll do the rest in seconds.")
 uploaded_file = st.file_uploader(" ", type=["pdf"], label_visibility="collapsed")
 
-# ==========================================================
-# MAIN LOGIC
-# ==========================================================
 if uploaded_file is not None:
     with st.spinner("🔎 Analyzing your resume with AI..."):
         progress = st.progress(0)
@@ -672,9 +604,8 @@ if uploaded_file is not None:
     result = analyze_resume(resume_text)
     st.success("✅ Resume Analysis Completed Successfully")
 
-    # ======================================================
-    # RESULT CARDS
-    # ======================================================
+    
+
     col1, col2 = st.columns(2)
     with col1:
         st.markdown(f"""
@@ -693,9 +624,7 @@ if uploaded_file is not None:
         </div>
         """, unsafe_allow_html=True)
 
-    # ======================================================
-    # ATS SCORE
-    # ======================================================
+    
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-eyebrow">📊 ATS Resume Score</div>', unsafe_allow_html=True)
     score = result["ATS Score"]
@@ -730,9 +659,7 @@ if uploaded_file is not None:
     st.plotly_chart(gauge, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ======================================================
-    # SKILLS FOUND
-    # ======================================================
+    
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown('<div class="card-eyebrow">✅ Skills Detected</div>', unsafe_allow_html=True)
     st.markdown("<h3 style='margin:0 0 14px;'>What you already bring to the table</h3>", unsafe_allow_html=True)
@@ -746,13 +673,7 @@ if uploaded_file is not None:
         st.markdown(f"<div>{chips_html}</div>", unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-        # ======================================================
-    # RECOMMENDED SKILLS
-    # ======================================================
-
-         # ======================================================
-    # RECOMMENDED SKILLS
-    # ======================================================
+        
 
     st.markdown('<div class="card">', unsafe_allow_html=True)
 
@@ -761,9 +682,7 @@ if uploaded_file is not None:
         unsafe_allow_html=True
     )
 
-    # ------------------------------------------------------
-    # NO SKILLS NEEDED
-    # ------------------------------------------------------
+    
 
     if len(result["Missing Skills"]) == 0:
 
@@ -782,9 +701,7 @@ if uploaded_file is not None:
         </div>
         """, unsafe_allow_html=True)
 
-    # ------------------------------------------------------
-    # SHOW RECOMMENDED SKILLS
-    # ------------------------------------------------------
+    
 
     else:
 
@@ -819,9 +736,7 @@ if uploaded_file is not None:
         unsafe_allow_html=True
     )
 
-    # ======================================================
-    # RESUME TEXT
-    # ======================================================
+   
 
     with st.expander("📑 View Extracted Resume Text"):
 
